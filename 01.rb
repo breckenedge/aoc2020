@@ -1,12 +1,29 @@
 integers = DATA.map(&:to_i)
 
-integers.each_with_index do |x, i|
-  integers[i..].each_with_index do |y, j|
-    if x + y == 2020
-      puts x * y
+def part1(integers)
+  integers.each_with_index do |x, i|
+    integers[i..].each_with_index do |y, j|
+      if x + y == 2020
+        return x * y
+      end
     end
   end
 end
+
+def part2(integers)
+  integers.each_with_index do |x, i|
+    integers[i..].each_with_index do |y, j|
+      integers[j..].each_with_index do |z, k|
+        if x + y + z == 2020
+          return x * y * z
+        end
+      end
+    end
+  end
+end
+
+puts "part 1: #{part1(integers)}"
+puts "part 2: #{part2(integers)}"
 
 __END__
 1509
