@@ -1,22 +1,21 @@
 require './circular_list'
 
-def p1(input = p1_input)
+def p1(input = p1_input, slope = [3, 1])
   x = 0
   y = 0
   trees = 0
 
   loop do
-    break if y > input.length
+    break if y >= input.length
 
     if input[y][x] == '#'
       trees += 1
     end
 
-    x = x + 3
-    y = y + 1
+    x = x + slope[0]
+    y = y + slope[1]
   end
 
-rescue
   trees
 end
 
@@ -27,6 +26,9 @@ def p1_input
 end
 
 def p2(input = p2_input)
+  [[1, 1], [3, 1], [5, 1], [7, 1], [1, 2]].map do |slope|
+    p1(input, slope)
+  end.inject(:*)
 end
 
 def p2_input
