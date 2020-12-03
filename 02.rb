@@ -22,6 +22,14 @@ def p1_input
 end
 
 def p2(input = p2_input)
+  input.count do |policy, password|
+    range, letter = policy.split(' ')
+
+    letter.gsub!(':', '')
+    low, high = range.split('-').map(&:to_i)
+
+    (password[low - 1] == letter) ^ (password[high - 1] == letter)
+  end
 end
 
 def p2_input
