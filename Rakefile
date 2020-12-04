@@ -44,7 +44,9 @@ task :download_input do
     'accept-language' => 'en-US,en;q=0.9,zh;q=0.8',
     'cookie' => "session=#{session}",
   }
-  response = Net::HTTP.get(uri, headers)
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = uri.scheme == 'https'
+  response = http.get(uri.request_uri, headers)
 
   File.open(filename, 'w') do |f|
     f << response.body
