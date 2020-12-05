@@ -3,6 +3,8 @@ require 'date'
 require 'yaml'
 require 'net/http'
 require 'uri'
+require 'zlib'
+require 'stringio'
 
 task default: [:open_instructions, :create_script, :download_input]
 
@@ -49,6 +51,6 @@ task :download_input do
   response = http.get(uri.request_uri, headers)
 
   File.open(filename, 'w') do |f|
-    f << response.body
+    f << Zlib::GzipReader.new(StringIO.new(response.body)).read
   end
 end
