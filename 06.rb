@@ -1,3 +1,5 @@
+require_relative './lines_grouper'
+
 def p1(input = p1_input)
   input.sum do |group|
     group.join.each_char.uniq.size
@@ -5,21 +7,7 @@ def p1(input = p1_input)
 end
 
 def p1_input(data = self.data)
-  collection = []
-  current = []
-
-  data.each do |row|
-    if row == ""
-      collection << current
-      current = []
-    else
-      current << row
-    end
-  end
-
-  collection << current
-
-  collection
+  LinesGrouper.(data)
 end
 
 def p2(input = p2_input)
