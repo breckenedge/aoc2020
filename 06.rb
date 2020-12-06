@@ -4,7 +4,7 @@ def p1(input = p1_input)
   end
 end
 
-def p1_input(data = self.data())
+def p1_input(data = self.data)
   collection = []
   current = []
 
@@ -24,9 +24,7 @@ end
 
 def p2(input = p2_input)
   input.sum do |group|
-    chars = group.join.each_char.uniq
-
-    chars.select { |c| group.all? { |g| g.include?(c) } }.size
+    group.join.each_char.tally.select { |c, v| v == group.size }.size
   end
 end
 
