@@ -8,7 +8,7 @@ def p1(input = p1_input)
   loop do
     new_holders = Set.new
 
-    (input.keys - set.to_a).count do |key|
+    (input.keys - set.to_a).each do |key|
       set.each do |k|
         if input[key].key?(k)
           new_holders << key
@@ -48,8 +48,9 @@ end
 def count_bags(input, bag, totals, parent_count)
   if input[bag].any?
     input[bag].each do |bagg, count|
-      totals[bagg] += count * parent_count
-      count_bags(input, bagg, totals, count * parent_count)
+      bag_count = count * parent_count
+      totals[bagg] += bag_count
+      count_bags(input, bagg, totals, bag_count)
     end
   end
 end
