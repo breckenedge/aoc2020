@@ -40,6 +40,18 @@ def p1_input(data = self.data)
 end
 
 def p2(input = p2_input)
+  totals = Hash.new { |h, k| h[k] = 0 }
+  count_bags(input, BAG, totals, 1)
+  totals.values.sum
+end
+
+def count_bags(input, bag, totals, parent_count)
+  if input[bag].any?
+    input[bag].each do |bagg, count|
+      totals[bagg] += count * parent_count
+      count_bags(input, bagg, totals, count * parent_count)
+    end
+  end
 end
 
 def p2_input
@@ -90,9 +102,28 @@ def example_data
   EOS
 end
 
+def e2(input = e2_input)
+  p2(input)
+end
+
+def e2_input
+  data = <<~EOS.split("\n")
+    shiny gold bags contain 2 dark red bags.
+    dark red bags contain 2 dark orange bags.
+    dark orange bags contain 2 dark yellow bags.
+    dark yellow bags contain 2 dark green bags.
+    dark green bags contain 2 dark blue bags.
+    dark blue bags contain 2 dark violet bags.
+    dark violet bags contain no other bags.
+  EOS
+
+  p1_input(data)
+end
+
 def main
   puts "example 1: #{e1}"
   puts "part 1: #{p1}"
+  puts "example 2: #{e2}"
   puts "part 2: #{p2}"
   exit 0
 end
