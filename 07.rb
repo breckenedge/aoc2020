@@ -1,3 +1,4 @@
+require './zero_hash'
 require 'set'
 
 BAG = 'shiny gold'
@@ -40,7 +41,7 @@ def p1_input(data = self.data)
 end
 
 def p2(input = p2_input)
-  totals = Hash.new { |h, k| h[k] = 0 }
+  totals = ZeroHash.new
   count_bags(input, BAG, totals, 1)
   totals.values.sum
 end
