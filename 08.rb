@@ -35,6 +35,43 @@ def p1_input(data = self.data)
 end
 
 def p2(input = p2_input)
+  changed_line = 0
+
+  loop do
+    program = Marshal.load(Marshal.dump(input))
+
+    if program[changed_line][0] == 'nop'
+      program[changed_line][0] = 'jmp'
+    elsif program[changed_line][0] == 'jmp'
+      program[changed_line][0] = 'nop'
+    end
+
+    visited_lines = Set.new
+    line = 0
+    accum = 0
+
+    loop do
+      break if visited_lines.include?(line) || line == program.length
+
+      visited_lines.add(line)
+
+      ins, arg = program[line]
+
+      case ins
+      when 'nop'
+        line += 1
+      when 'jmp'
+        line += arg
+      when 'acc'
+        accum += arg
+        line += 1
+      end
+    end
+
+    changed_line += 1
+
+    return accum if line == program.length
+  end
 end
 
 def p2_input
@@ -61,6 +98,10 @@ def e1_input
   p1_input(str)
 end
 
+def e2(input = e1_input)
+  p2(e1_input)
+end
+
 def data(filename = '08.input')
   @data ||= File.readlines(filename).map(&:strip)
 end
@@ -68,6 +109,7 @@ end
 def main
   puts "example 1: #{e1}"
   puts "part 1: #{p1}"
+  puts "example 2: #{e2}"
   puts "part 2: #{p2}"
   exit 0
 end

@@ -44,6 +44,10 @@ class CircularList
     @size = @array.size
   end
 
+  def length
+    array.length
+  end
+
   def join(str)
     array.join(str)
   end
