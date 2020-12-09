@@ -10,7 +10,24 @@ def p1_input(data = self.data)
   data.map(&:to_i)
 end
 
-def p2(input = p2_input)
+def p2(input = p2_input, preamble = 25)
+  target = p1(input, preamble)
+  s = 0
+  l = 2
+
+  loop do
+    curr = input[s, l]
+    sum = curr.sum
+
+    if sum == target
+      return curr.minmax.sum
+    elsif sum > target
+      s += 1
+      l = 2
+    else
+      l += 1
+    end
+  end
 end
 
 def p2_input
