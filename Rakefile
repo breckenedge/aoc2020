@@ -16,12 +16,13 @@ end
 task :create_script do
   today = Date.today
   template = ERB.new(File.read('./template.rb.erb'))
-  day = '%02d' % today.day
-  filename = "#{day}.rb"
+  day = today.day
+  input_filename = "#{'%02d' % day}.input"
+  filename = "#{'%02d' % day}.rb"
 
   if !File.exist?(filename)
     File.open(filename, 'w') do |f|
-      f << template.result_with_hash(day: day)
+      f << template.result_with_hash(day: day, input_filename: input_filename)
     end
 
     File.chmod(0755, filename)

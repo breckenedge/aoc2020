@@ -1,32 +1,36 @@
-def p1(input = p1_input)
+module Day<%= day %>
+  module_function
+
+  def p1(input = p1_input)
+  end
+
+  def p1_input(data = self.data)
+    data
+  end
+
+  def p2(input = p2_input)
+  end
+
+  def p2_input
+    p1_input
+  end
+
+  def e1(input = e1_input)
+  end
+
+  def e1_input
+  end
+
+  def data(filename = '<%= input_filename %>')
+    @data ||= File.readlines(filename).map(&:strip)
+  end
+
+  def main
+    puts "example 1: #{e1}"
+    puts "part 1: #{p1}"
+    puts "part 2: #{p2}"
+    exit 0
+  end
 end
 
-def p1_input(data = self.data)
-  data
-end
-
-def p2(input = p2_input)
-end
-
-def p2_input
-  p1_input
-end
-
-def e1(input = e1_input)
-end
-
-def e1_input
-end
-
-def data(filename = '<%= day %>.input')
-  @data ||= File.readlines(filename).map(&:strip)
-end
-
-def main
-  puts "example 1: #{e1}"
-  puts "part 1: #{p1}"
-  puts "part 2: #{p2}"
-  exit 0
-end
-
-main if __FILE__ == $0
+Day<%= day %>.main if __FILE__ == $0
