@@ -38,6 +38,10 @@ module Day10
 
     gap_groups.each do |group|
       case group.length
+      when 7
+        sum *= 24
+      when 6
+        sum *= 13
       when 5
         sum *= 7
       when 4
