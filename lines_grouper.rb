@@ -2,7 +2,7 @@
 module LinesGrouper
   module_function
 
-  def call(inputs)
+  def call(data)
     collection = []
     current = []
 
