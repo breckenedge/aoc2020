@@ -7,4 +7,8 @@ class ZeroHash
   def method_missing(name, *args, &block)
     @hash.send(name, *args, &block)
   end
+
+  def to_s
+    @hash.to_s
+  end
 end

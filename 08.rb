@@ -1,108 +1,45 @@
 require 'set'
 require './circular_list'
+require './game_console'
 
 module Day8
   module_function
 
-  def p1(input = p1_input)
-    visited_lines = Set.new
-    line = 0
-    accum = 0
-
-    loop do
-      break if visited_lines.include?(line)
-
-      visited_lines.add(line)
-
-      ins, arg = input[line]
-
-      case ins
-      when 'nop'
-        line += 1
-      when 'jmp'
-        line += arg
-      when 'acc'
-        accum += arg
-        line += 1
-      end
-    end
-
-    accum
+  def detect_infinite_loop(boot_code = p1_input)
+    gc = GameConsole.new
+    gc.game = CircularList.new(boot_code)
+    gc.run  { |console| false if console.looped }
+    gc.mem[:acc]
   end
 
   def p1_input(data = self.data)
-    CircularList.new(data.map do |line|
+    data.map do |line|
       ins, arg = line.split(' ')
       [ins, arg.to_i]
-    end)
-  end
-
-  def p2(input = p2_input)
-    changed_line = 0
-
-    loop do
-      program = Marshal.load(Marshal.dump(input))
-
-      if program[changed_line][0] == 'nop'
-        program[changed_line][0] = 'jmp'
-      elsif program[changed_line][0] == 'jmp'
-        program[changed_line][0] = 'nop'
-      end
-
-      visited_lines = Set.new
-      line = 0
-      accum = 0
-
-      loop do
-        break if visited_lines.include?(line) || line == program.length
-
-        visited_lines.add(line)
-
-        ins, arg = program[line]
-
-        case ins
-        when 'nop'
-          line += 1
-        when 'jmp'
-          line += arg
-        when 'acc'
-          accum += arg
-          line += 1
-        end
-      end
-
-      changed_line += 1
-
-      return accum if line == program.length
     end
   end
 
-  def p2_input
-    p1_input
-  end
+  def find_corrupted_instruction(input = p1_input)
+    changed_line = 0
+    gc = GameConsole.new
 
-  def e1(input = e1_input)
-    p1(e1_input)
-  end
+    loop do
+      boot_code = Marshal.load(Marshal.dump(input))
 
-  def e1_input
-    str = <<~EOS.split("\n")
-      nop +0
-      acc +1
-      jmp +4
-      acc +3
-      jmp -3
-      acc -99
-      acc +1
-      jmp -4
-      acc +6
-    EOS
+      if boot_code[changed_line][0] == 'nop'
+        boot_code[changed_line][0] = 'jmp'
+      elsif boot_code[changed_line][0] == 'jmp'
+        boot_code[changed_line][0] = 'nop'
+      end
 
-    p1_input(str)
-  end
+      gc.reboot
+      gc.game = boot_code
+      gc.run { |console| false if console.looped || console.halted }
+      changed_line += 1
+      break if gc.halted
+    end
 
-  def e2(input = e1_input)
-    p2(e1_input)
+    gc.mem[:acc]
   end
 
   def data(filename = '08.input')
@@ -110,10 +47,8 @@ module Day8
   end
 
   def main
-    puts "example 1: #{e1}"
-    puts "part 1: #{p1}"
-    puts "example 2: #{e2}"
-    puts "part 2: #{p2}"
+    puts "part 1: #{detect_infinite_loop}"
+    puts "part 2: #{find_corrupted_instruction}"
     exit 0
   end
 end
