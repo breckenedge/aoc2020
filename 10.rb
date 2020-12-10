@@ -2,7 +2,8 @@ module Day10
   module_function
 
   def p1(input = p1_input)
-    sorted = [0] + input.sort + [input.max + 3]
+    max = input.max + 3
+    sorted = [0] + input.sort + [max]
 
     jdiffs = sorted.map.with_index do |jolts, i|
       next if i == 0
@@ -17,6 +18,36 @@ module Day10
   end
 
   def p2(input = p2_input)
+    max = input.max + 3
+    jolts = [0] + input.sort + [max]
+    gap_groups = []
+    current_group = []
+
+    jolts.each_with_index do |jolt, i|
+      if jolt - jolts[i - 1] == 3
+        gap_groups << current_group.dup
+        current_group = [jolt]
+      else
+        current_group << jolt
+      end
+    end
+
+    gap_groups << current_group
+
+    sum = 1
+
+    gap_groups.each do |group|
+      case group.length
+      when 5
+        sum *= 7
+      when 4
+        sum *= 4
+      when 3
+        sum *= 2
+      end
+    end
+
+    sum
   end
 
   def p2_input
@@ -28,6 +59,22 @@ module Day10
   end
 
   def e1_input
+    %w[
+      16
+      10
+      15
+      5
+      1
+      11
+      7
+      19
+      6
+      12
+      4
+    ].map(&:to_i)
+  end
+
+  def e2_input
     %w[
       28
       33
@@ -70,6 +117,7 @@ module Day10
   def main
     puts "example 1: #{e1}"
     puts "part 1: #{p1}"
+    puts "example 2: #{p2(e2_input)}"
     puts "part 2: #{p2}"
     exit 0
   end
