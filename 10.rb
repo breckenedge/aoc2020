@@ -1,3 +1,5 @@
+require './tribonacci'
+
 module Day10
   module_function
 
@@ -36,19 +38,11 @@ module Day10
 
     sum = 1
 
+    max_size = gap_groups.map(&:size).max
+    tribonaccis = Tribonacci.(max_size)
+
     gap_groups.each do |group|
-      case group.length
-      when 7
-        sum *= 24
-      when 6
-        sum *= 13
-      when 5
-        sum *= 7
-      when 4
-        sum *= 4
-      when 3
-        sum *= 2
-      end
+      sum *= tribonaccis[group.length + 1]
     end
 
     sum
