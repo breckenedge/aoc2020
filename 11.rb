@@ -1,4 +1,5 @@
 require 'RMagick'
+require './adjacent_generator'
 require './image'
 
 module Day11
@@ -11,7 +12,6 @@ module Day11
   
   def detect_no_changes_in_grid(input)
     grid = Marshal.load(Marshal.dump(input))
-    step = 0
 
     loop do
       new_grid = []
@@ -34,26 +34,11 @@ module Day11
 
       return new_grid if grid == new_grid
       grid = new_grid
-      step += 1
     end
   end
 
-  def adjacents
-    [
-      [-1, -1], [-1, 0], [-1, 1],
-      [0, -1],           [0, 1],
-      [1, -1],  [1, 0],  [1, 1]
-    ]
-  end
-
-  def adjacent_occupied(grid, x, y)
-    adjacents.select do |a|
-      row_index = y + a[0]
-      col_index = x + a[1]
-      row = grid[y + a[0]]
-      col = row && row[col_index]
-      row_index >= 0 && row_index < grid.size && row && col_index >= 0 && col_index < row.size && row[col_index] == '#'
-    end
+  def adjacent_occupied(grid, col, row)
+    AdjacentGenerator.(grid, row, col).select { |p| p == '#' }
   end
 
   def p1_input(data = self.data)
@@ -167,12 +152,14 @@ module Day11
   def main
     puts "example 1: #{e1}"
 
+    i = 0
     part1 = Magick::ImageList.new
-    puts "part 1: #{p1(p1_input) { |grid| part1 << Image.grid_to_image(grid) }}"
+    puts "part 1: #{p1(p1_input) { |grid| part1 << Image.grid_to_image(grid) if i.even?; i += 1 }}"
     part1.write('11.1.gif')
 
+    i = 0
     part2 = Magick::ImageList.new
-    puts "part 2: #{p2(p2_input) { |grid| part2 << Image.grid_to_image(grid) }}"
+    puts "part 2: #{p2(p2_input) { |grid| part2 << Image.grid_to_image(grid) if i.even?; i += 1 }}"
     part2.write('11.2.gif')
     exit 0
   end
