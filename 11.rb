@@ -16,16 +16,16 @@ module Day11
     loop do
       new_grid = []
 
-      grid.each_index do |y|
-        new_grid[y] = []
+      grid.each_index do |row|
+        new_grid[row] = []
 
-        grid[y].each_index do |x|
-          if grid[y][x] == 'L' && adjacent_occupied(grid, x, y).count == 0
-            new_grid[y][x] = '#'
-          elsif grid[y][x] == '#' && adjacent_occupied(grid, x, y).count >= 4
-            new_grid[y][x] = 'L'
+        grid[row].each_index do |col|
+          if grid[row][col] == 'L' && adjacent_occupied(grid, row, col).count == 0
+            new_grid[row][col] = '#'
+          elsif grid[row][col] == '#' && adjacent_occupied(grid, row, col).count >= 4
+            new_grid[row][col] = 'L'
           else
-            new_grid[y][x] = grid[y][x]
+            new_grid[row][col] = grid[row][col]
           end
         end
       end
@@ -37,7 +37,7 @@ module Day11
     end
   end
 
-  def adjacent_occupied(grid, col, row)
+  def adjacent_occupied(grid, row, col)
     AdjacentGenerator.(grid, row, col).select { |cell| cell.val == '#' }
   end
 
