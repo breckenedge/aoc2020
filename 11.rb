@@ -56,10 +56,80 @@ module Day11
   end
 
   def p2(input = p2_input)
+    grid = detect_no_changes_in_grid_2(input)
+    grid.flatten.count { |pos| pos == '#' }
   end
 
   def p2_input
     p1_input
+  end
+
+  def detect_no_changes_in_grid_2(input)
+    grid = Marshal.load(Marshal.dump(input))
+    step = 0
+
+    loop do
+      new_grid = []
+
+      grid.each_index do |y|
+        new_grid[y] = []
+
+        grid[y].each_index do |x|
+          if grid[y][x] == 'L' && visible_occupied(grid, x, y).count == 0
+            new_grid[y][x] = '#'
+          elsif grid[y][x] == '#' && visible_occupied(grid, x, y).count >= 5
+            new_grid[y][x] = 'L'
+          else
+            new_grid[y][x] = grid[y][x]
+          end
+        end
+      end
+
+      return new_grid if grid == new_grid
+      grid = new_grid
+      step += 1
+    end
+  end
+
+  def slopes
+    [
+      [-1, -1], [-1, 0], [-1, 1],
+      [0, -1],           [0, 1],
+      [1, -1],  [1, 0],  [1, 1]
+    ]
+  end
+
+  def visible_occupied(grid, x, y)
+    slopes.select do |slope|
+      visible_occupied_on_slope?(grid, x, y, slope)
+    end
+  end
+
+  def visible_occupied_on_slope?(grid, x, y, slope)
+    visibles_from(grid, x, y, slope).any? { |pos| pos == '#' }
+  end
+
+  def visibles_from(grid, col, row, slope)
+    row_index = row
+    col_index = col
+    visibles = []
+
+    loop do
+      row_index += slope[0]
+      col_index += slope[1]
+
+      if row_index < 0 || row_index > grid.size || col_index < 0 || grid[row_index].nil? || col_index > grid[row_index].size
+        break
+      end
+
+      pos = grid[row_index][col_index] 
+
+      visibles << pos
+
+      break if ['#', 'L'].include?(pos)
+    end
+
+    visibles
   end
 
   def e1(input = e1_input)
