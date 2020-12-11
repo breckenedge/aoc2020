@@ -38,7 +38,7 @@ module Day11
   end
 
   def adjacent_occupied(grid, col, row)
-    AdjacentGenerator.(grid, row, col).select { |p| p == '#' }
+    AdjacentGenerator.(grid, row, col).select { |cell| cell.val == '#' }
   end
 
   def p1_input(data = self.data)

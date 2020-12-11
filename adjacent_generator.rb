@@ -1,5 +1,8 @@
 # Given a grid and row column indexes, get all adjacent grid entries
+
 module AdjacentGenerator
+  Cell = Struct.new(:row, :col, :val)
+
   module_function
 
   ADJACENTS = [
@@ -18,7 +21,7 @@ module AdjacentGenerator
         curr_col = col_index + col_offset
 
         if curr_row >= 0 && curr_col >= 0 && curr_row < rows && curr_col < cols
-          adjacents << grid[curr_row][curr_col]
+          adjacents << Cell.new(curr_row, curr_col, grid[curr_row][curr_col])
         end
       end
     end
