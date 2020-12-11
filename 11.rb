@@ -1,8 +1,11 @@
+require 'RMagick'
+require './image'
+
 module Day11
   module_function
 
-  def p1(input = p1_input)
-    grid = detect_no_changes_in_grid(input)
+  def p1(input = p1_input, &block)
+    grid = detect_no_changes_in_grid(input, &block)
     grid.flatten.count { |pos| pos == '#' }
   end
   
@@ -26,6 +29,8 @@ module Day11
           end
         end
       end
+
+      yield new_grid if block_given?
 
       return new_grid if grid == new_grid
       grid = new_grid
@@ -55,8 +60,8 @@ module Day11
     data.map(&:chars)
   end
 
-  def p2(input = p2_input)
-    grid = detect_no_changes_in_grid_2(input)
+  def p2(input = p2_input, &block)
+    grid = detect_no_changes_in_grid_2(input, &block)
     grid.flatten.count { |pos| pos == '#' }
   end
 
@@ -84,6 +89,8 @@ module Day11
           end
         end
       end
+
+      yield new_grid if block_given?
 
       return new_grid if grid == new_grid
       grid = new_grid
@@ -159,8 +166,14 @@ module Day11
 
   def main
     puts "example 1: #{e1}"
-    puts "part 1: #{p1}"
-    puts "part 2: #{p2}"
+
+    part1 = Magick::ImageList.new
+    puts "part 1: #{p1(p1_input) { |grid| part1 << Image.grid_to_image(grid) }}"
+    part1.write('11.1.gif')
+
+    part2 = Magick::ImageList.new
+    puts "part 2: #{p2(p2_input) { |grid| part2 << Image.grid_to_image(grid) }}"
+    part2.write('11.2.gif')
     exit 0
   end
 end
