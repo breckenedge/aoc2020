@@ -8,6 +8,10 @@ class CircularList
     @size = size
   end
 
+  def index(item)
+    array.index(item)
+  end
+
   def [](i, len = 1)
     j = i.abs >= size ? i % size : i
     if len == 1
