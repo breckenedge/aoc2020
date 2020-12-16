@@ -33,6 +33,45 @@ module Day16
   end
 
   def p2(input = p2_input)
+    tickets = valid_tickets(input[:nearby], input[:ranges])
+    entries = tickets.transpose
+    locked_fields = {}
+
+    loop do
+      entries.each_with_index do |e, i|
+        pfields = possible_fields(e, input[:ranges], locked_fields)
+
+        if pfields.one?
+          locked_fields[pfields[0]] = i
+        end
+      end
+
+      break if locked_fields.keys.length == input[:ranges].keys.length
+    end
+
+    departure_fields = locked_fields.keys.select { |k| k =~ /^departure/ }
+
+    departure_fields.inject(1) do |tot, field|
+      tot *= input[:mine][locked_fields[field]]
+    end
+  end
+
+  def possible_fields(entries, ranges, locked_fields)
+    (ranges.keys - locked_fields.keys).select do |k|
+      entries.all? do |e|
+        ranges[k].any? do |r|
+          r.include?(e)
+        end
+      end
+    end
+  end
+
+  def valid_tickets(tickets, ranges)
+    tickets.select do |ticket|
+      ticket.all? do |entry|
+        ranges.values.any? { |ranges| ranges.any? { |r| r.include?(entry) } }
+      end
+    end
   end
 
   def p2_input
@@ -60,6 +99,26 @@ module Day16
     EOS
   end
 
+  def e2_input
+    p1_input(<<~EOS.split("\n"))
+      class: 0-1 or 4-19
+      row: 0-5 or 8-19
+      seat: 0-13 or 16-19
+
+      your ticket:
+      11,12,13
+
+      nearby tickets:
+      3,9,18
+      15,1,5
+      5,14,9
+    EOS
+  end
+
+  def e2(input = e2_input)
+    p2(input)
+  end
+
   def data(filename = '16.input')
     @data ||= File.readlines(filename).map(&:strip)
   end
@@ -67,6 +126,7 @@ module Day16
   def main
     puts "example 1: #{e1}"
     puts "part 1: #{p1}"
+    puts "example 2: #{e2}"
     puts "part 2: #{p2}"
     exit 0
   end
