@@ -1,28 +1,38 @@
 module Day15
   module_function
 
-  def p1(input = p1_input)
-    spoken = input.clone
-    t = 0
+  def p1(input = p1_input, times = 2020)
+    spoken = {}
+    t = input.length
+    last = nil
+
+    input.each_with_index do |v, i|
+      spoken[v] ||= []
+      spoken[v].push(i)
+      last = v
+    end
+
+    loaded = false
 
     loop do
-      last = spoken.last
-      slice = spoken[0..(spoken.length - 2)]
+      break if t == times
 
-      if slice.include?(last)
-        index1 = spoken.rindex(last)
-        index2 = spoken[0..(index1 - 1)].rindex(last)
-        spoken << index1 - index2
-      else
-        spoken << 0
-      end
+      nxt = if spoken.key?(last) && spoken[last].length > 1 && loaded
+              spoken[last][-1] - spoken[last][-2]
+            else
+              0
+            end
 
-      break if spoken.length == 2020
+      loaded = true
 
+      spoken[nxt] ||= []
+      spoken[nxt].push(t)
+
+      last = nxt
       t += 1
     end
 
-    spoken.last
+    last
   end
 
   def p1_input(data = self.data)
@@ -30,6 +40,7 @@ module Day15
   end
 
   def p2(input = p2_input)
+    p1(input, 30_000_000)
   end
 
   def p2_input
