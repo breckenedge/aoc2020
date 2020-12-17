@@ -3,48 +3,27 @@ module Day17
 
   def adjacents(dimensions)
     @adjacents ||= {}
-    @adjacents[dimensions] ||= if dimensions == 3
-                                 -1.upto(1).flat_map do |x|
-                                   -1.upto(1).flat_map do |y|
-                                     -1.upto(1).map do |z|
-                                       [x, y, z] unless x == 0 && y == 0 && z == 0
-                                     end
-                                   end
-                                 end.compact
-                               elsif dimensions == 4
-                                 -1.upto(1).flat_map do |x|
-                                   -1.upto(1).flat_map do |y|
-                                     -1.upto(1).flat_map do |z|
-                                       -1.upto(1).map do |w|
-                                         [x, y, z, w] unless x == 0 && y == 0 && z == 0 && w == 0
-                                       end
-                                     end
-                                   end
-                                 end.compact
-                               end
+    @adjacents[dimensions] ||= [-1, 0, 1].repeated_permutation(dimensions).to_a.reject { |addr| addr.all?(&:zero?) }
   end
 
-  def neighbor_addresses(address, dimensions)
-    adjacents(dimensions).map do |adj|
-      dimensions.times.map do |i|
-        address[i] + adj[i]
-      end
-    end
+  def neighbor_addresses(address)
+    @neighbor_addresses ||= {}
+    @neighbor_addresses[address] ||= adjacents(address.size).map { |adj| address.size.times.map { |i| address[i] + adj[i] } }
   end
 
-  def p1(grid = p1_input, dimensions = 3)
+  def p1(grid = p1_input, dimensions = 3, steps = 6)
     new_grid = grid.clone
-    6.times { new_grid = p1_step(new_grid, dimensions) }
+    steps.times { new_grid = p1_step(new_grid, dimensions) }
     new_grid.values.count { |value| value == '#' }
   end
 
   def p1_step(grid, dimensions)
-    new_grid = Hash.new
+    new_grid = {}
 
     grid.each do |address, _value|
-      neighbor_addresses(address, dimensions).each do |naddr|
+      neighbor_addresses(address).each do |naddr|
         value = grid[naddr]
-        active_neighbors = neighbor_addresses(naddr, dimensions).count { |nnaddr| grid[nnaddr] == '#' }
+        active_neighbors = neighbor_addresses(naddr).count { |nnaddr| grid[nnaddr] == '#' }
 
         if value == '#'
           if active_neighbors == 2 || active_neighbors == 3
